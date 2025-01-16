@@ -5,10 +5,44 @@ function StopWatch() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalIdRef = useRef(null);
   const startTimeRef = useRef(0);
-  function start() {}
-  function stop() {}
-  function reset() {}
-  function formatTime() {}
+  useEffect(() => {
+    if (isRunning) {
+      intervalIdRef.current = setInterval(() => {
+        setElapsedTime(Date.now() - startTimeRef.current);
+      }, 10);
+    }
+    return () => {
+      clearInterval(intervalIdRef.current);
+    };
+  }, [isRunning]);
+  function start() {
+    setIsRunning(true);
+    startTimeRef.current = Date.now() - elapsedTime;
+  }
+  function stop() {
+    setIsRunning(false);
+  }
+  function reset() {
+    setElapsedTime(0);
+  }
+  function formatTime() {
+
+
+    let hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    let minutes = Math.floor(elapsedTime / (1000 * 60) % 60);
+    let second = Math.floor(elapsedTime / (1000)% 60);
+    let millisecond = Math.floor((elapsedTime % 1000) / 10);
+
+
+    hours = String(hours).padStart(2, "0");
+    minutes = String(minutes).padStart(2, "0");
+    second = String(second).padStart(2, "0");
+    millisecond = String(millisecond).padStart(2, "0");
+
+
+
+    return `${minutes}:${second}:${millisecond}`;
+  }
   useEffect(() => {}, [isRunning]);
   return (
     <>
@@ -18,10 +52,10 @@ function StopWatch() {
           <button onClick={start} className="start-button">
             Start
           </button>
-          <button onClick={stop} className="start-button">
+          <button onClick={stop} className="stop-button">
             Stop
           </button>
-          <button onClick={reset} className="start-button">
+          <button onClick={reset} className="reset-button">
             Reset
           </button>
         </div>
